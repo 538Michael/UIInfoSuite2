@@ -26,6 +26,7 @@ internal class ShowItemHoverInformation : IDisposable
 
   private readonly IModHelper _helper;
 
+  private readonly ClickableTextureComponent _fieldOfficeIcon;
   private readonly PerScreen<Item?> _hoverItem = new();
   private readonly ClickableTextureComponent _museumIcon;
 
@@ -63,6 +64,26 @@ internal class ShowItemHoverInformation : IDisposable
       new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
       gunther.Sprite.Texture,
       gunther.GetHeadShot(),
+      Game1.pixelZoom
+    );
+
+    NPC? professorSnail = Game1.getCharacterFromName("Professor Snail");
+    if (professorSnail == null)
+    {
+      ModEntry.MonitorObject.Log(
+        $"{GetType().Name}: Could not find Professor Snail in the game, creating a fake one for ourselves.",
+        LogLevel.Warn
+      );
+      professorSnail = new NPC
+      {
+        Name = "Professor Snail", Age = 0, Sprite = new AnimatedSprite("Characters\\SafariGuy")
+      };
+    }
+
+    _fieldOfficeIcon = new ClickableTextureComponent(
+      new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
+      professorSnail.Sprite.Texture,
+      professorSnail.GetHeadShot(),
       Game1.pixelZoom
     );
   }
@@ -147,6 +168,7 @@ internal class ShowItemHoverInformation : IDisposable
 
       bool notDonatedYet = _libraryMuseum.isItemSuitableForDonation(_hoverItem.Value);
 
+      bool notDonatedToFieldOfficeYet = FieldOfficeHelper.IsItemNeededForFieldOffice(_hoverItem.Value);
 
       bool notShippedYet = hoveredObject != null &&
                            hoveredObject.countsForShippedCollection() &&
@@ -246,6 +268,7 @@ internal class ShowItemHoverInformation : IDisposable
           cropPrice > 0 ||
           !string.IsNullOrEmpty(requiredBundleName) ||
           notDonatedYet ||
+          notDonatedToFieldOfficeYet ||
           notShippedYet)
       {
         IClickableMenu.drawTextureBox(
@@ -336,6 +359,23 @@ internal class ShowItemHoverInformation : IDisposable
           Color.White,
           0f,
           new Vector2(_museumIcon.sourceRect.Width / 2, _museumIcon.sourceRect.Height),
+          2,
+          SpriteEffects.None,
+          0.86f
+        );
+      }
+
+      if (notDonatedToFieldOfficeYet)
+      {
+        // Offset to the right if the museum icon is also showing
+        float fieldOfficeIconX = notDonatedYet ? 2 + _museumIcon.sourceRect.Width * 2 + 4 : 2;
+        spriteBatch.Draw(
+          _fieldOfficeIcon.texture,
+          windowPos + new Vector2(fieldOfficeIconX, windowHeight + 8),
+          _fieldOfficeIcon.sourceRect,
+          Color.White,
+          0f,
+          new Vector2(_fieldOfficeIcon.sourceRect.Width / 2, _fieldOfficeIcon.sourceRect.Height),
           2,
           SpriteEffects.None,
           0.86f
