@@ -1,7 +1,7 @@
 ﻿{
   "Name": "UI Info Suite 2",
   "Author": "538Michael",
-  "Version": "2.3.7",
+  "Version": "2.4.0",
   "Description": "Adds a useful information to the user interface. Based on Cdaragorn's excellent UI Info Suite.",
   "UniqueID": "538Michael.UiInfoSuite2",
   "EntryDll": "UIInfoSuite2.dll",

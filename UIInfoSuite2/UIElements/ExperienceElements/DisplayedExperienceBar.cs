@@ -8,14 +8,15 @@ namespace UIInfoSuite2.UIElements.ExperienceElements;
 
 public class DisplayedExperienceBar
 {
-  private const int MaxBarWidth = 175;
+  private const int MaxBarWidth = 220;
 
   public void Draw(
     Color experienceFillColor,
     Rectangle experienceIconPosition,
     int experienceEarnedThisLevel,
     int experienceDifferenceBetweenLevels,
-    int currentLevel
+    int currentLevel,
+    Texture2D? iconTexture = null
   )
   {
     int barWidth = GetBarWidth(experienceEarnedThisLevel, experienceDifferenceBetweenLevels);
@@ -24,7 +25,7 @@ public class DisplayedExperienceBar
     Game1.drawDialogueBox(
       (int)leftSide,
       Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 160,
-      240,
+      285,
       160,
       false,
       true
@@ -71,7 +72,7 @@ public class DisplayedExperienceBar
     else
     {
       Game1.spriteBatch.Draw(
-        Game1.mouseCursors,
+        iconTexture ?? Game1.mouseCursors,
         new Vector2(leftSide + 54, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 62),
         experienceIconPosition,
         Color.White,
@@ -119,7 +120,7 @@ public class DisplayedExperienceBar
   {
     return new ClickableTextureComponent(
       "",
-      new Rectangle((int)leftSide - 36, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 80, 260, 100),
+      new Rectangle((int)leftSide - 36, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 80, 305, 100),
       "",
       "",
       Game1.mouseCursors,
