@@ -428,7 +428,7 @@ internal class LocationOfTownsfolk : IDisposable
       text.AppendLine(name);
       if (!_nameWidthCache.TryGetValue(name, out int width))
       {
-        width = (int)Math.Ceiling(Game1.smallFont.MeasureString(name).Length());
+        width = (int)Math.Ceiling(Game1.smallFont.MeasureString(name).X);
         _nameWidthCache[name] = width;
       }
       longestLength = Math.Max(longestLength, width);
