@@ -85,19 +85,16 @@ public static class MachineHelper
     HashSet<string> outputChestNames = new();
     GetBuildingChestNames(building.GetData(), inputChestNames, outputChestNames);
 
-    IEnumerable<Chest> inputChests = inputChestNames.Select(building.GetBuildingChest)
-                                                    .Where(chest => chest is not null);
-    IEnumerable<Chest> outputChests =
-      outputChestNames.Select(building.GetBuildingChest).Where(chest => chest is not null);
-
-    foreach (Chest chest in inputChests)
+    foreach (string name in inputChestNames)
     {
-      inputItems.AddRange(chest.Items);
+      Chest? chest = building.GetBuildingChest(name);
+      if (chest is not null) inputItems.AddRange(chest.Items);
     }
 
-    foreach (Chest chest in outputChests)
+    foreach (string name in outputChestNames)
     {
-      outputItems.AddRange(chest.Items);
+      Chest? chest = building.GetBuildingChest(name);
+      if (chest is not null) outputItems.AddRange(chest.Items);
     }
   }
 
