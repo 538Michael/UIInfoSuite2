@@ -267,14 +267,10 @@ internal class ShowItemEffectRanges : IDisposable
           }
           else if (currentObject.Name.IndexOf("sprinkler", StringComparison.OrdinalIgnoreCase) >= 0)
           {
-            IEnumerable<Vector2> unplacedSprinklerTiles = currentObject.GetSprinklerTiles();
-            if (currentObject.TileLocation != validTile)
-            {
-              unplacedSprinklerTiles =
-                unplacedSprinklerTiles.Select(tile => tile - currentObject.TileLocation + validTile);
-            }
-
-            AddTilesToHighlightedArea(unplacedSprinklerTiles, true);
+            Vector2 sprinklerOffset = validTile - currentObject.TileLocation;
+            AddTilesToHighlightedArea(
+              currentObject.GetSprinklerTiles(), true, (int)sprinklerOffset.X, (int)sprinklerOffset.Y
+            );
 
             if (ButtonShowAllRanges)
             {
@@ -354,14 +350,11 @@ internal class ShowItemEffectRanges : IDisposable
          * That new behavior might not be intended and might get rolled back.
          */
 
-        // Move tiles to 0, 0 and then offset by the correct tile.
-        IEnumerable<Vector2> unplacedSprinklerTiles = currentItem.GetSprinklerTiles();
-        if (currentItem.TileLocation != validTile)
-        {
-          unplacedSprinklerTiles = unplacedSprinklerTiles.Select(tile => tile - currentItem.TileLocation + validTile);
-        }
-
-        AddTilesToHighlightedArea(unplacedSprinklerTiles, true);
+        // Move tiles from current TileLocation to the valid placement tile via offset.
+        Vector2 sprinklerOffset = validTile - currentItem.TileLocation;
+        AddTilesToHighlightedArea(
+          currentItem.GetSprinklerTiles(), true, (int)sprinklerOffset.X, (int)sprinklerOffset.Y
+        );
 
         similarObjects = GetSimilarObjectsInLocation("sprinkler");
         foreach (Object next in similarObjects)
