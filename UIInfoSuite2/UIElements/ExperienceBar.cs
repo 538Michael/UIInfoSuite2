@@ -29,6 +29,8 @@ public partial class ExperienceBar
   private readonly PerScreen<DisplayedLevelUpMessage> _displayedLevelUpMessage =
     new(() => new DisplayedLevelUpMessage());
 
+  private readonly PerScreen<string> _cachedLevelUpText = new(() => string.Empty);
+
   private readonly PerScreen<List<DisplayedExperienceValue>> _displayedExperienceValues =
     new(() => new List<DisplayedExperienceValue>());
 
@@ -167,6 +169,7 @@ public partial class ExperienceBar
     {
       _levelUpVisibleTimer.Value = LevelUpVisibleTicks;
       _levelUpIconRectangle.Value = SkillIconRectangles[e.Skill];
+      _cachedLevelUpText.Value = I18n.LevelUp();
 
       _experienceBarVisibleTimer.Value = ExperienceBarVisibleTicks;
 
@@ -230,7 +233,7 @@ public partial class ExperienceBar
       bool isMasteryLevelUp = _levelUpIconRectangle.Value == MasteryIconRectangle;
       _displayedLevelUpMessage.Value.Draw(
         _levelUpIconRectangle.Value,
-        I18n.LevelUp(),
+        _cachedLevelUpText.Value,
         isMasteryLevelUp ? Game1.mouseCursors_1_6 : null
       );
     }
@@ -365,6 +368,7 @@ public partial class ExperienceBar
       {
         _levelUpVisibleTimer.Value = LevelUpVisibleTicks;
         _levelUpIconRectangle.Value = MasteryIconRectangle;
+        _cachedLevelUpText.Value = I18n.LevelUp();
         _experienceBarVisibleTimer.Value = ExperienceBarVisibleTicks;
         SoundHelper.Play(Sounds.LevelUp);
       }
