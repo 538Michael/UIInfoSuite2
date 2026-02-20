@@ -99,15 +99,16 @@ internal class ShopHarvestPrices : IDisposable
         0.95f
       );
       // Price
+      string priceText = value.ToString();
       Game1.spriteBatch.DrawString(
         Game1.dialogueFont,
-        value.ToString(),
+        priceText,
         new Vector2(xPosition + 50, yPosition + 6),
         Color.Black * 0.2f
       );
       Game1.spriteBatch.DrawString(
         Game1.dialogueFont,
-        value.ToString(),
+        priceText,
         new Vector2(xPosition + 52, yPosition + 4),
         Color.Black * 0.8f
       );
