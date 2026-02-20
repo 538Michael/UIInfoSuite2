@@ -561,6 +561,8 @@ internal class ShowItemEffectRanges : IDisposable
     }
   }
 
+  private static readonly Dictionary<(double, double?, bool?, int?), int[][]> _maskCache = new();
+
   private static int[][] GetCircularMask(
     double maxDistance,
     double? exceptionalDistance = null,
@@ -568,6 +570,12 @@ internal class ShowItemEffectRanges : IDisposable
     int? maxDisplaySquareRadius = null
   )
   {
+    var key = (maxDistance, exceptionalDistance, onlyClearExceptions, maxDisplaySquareRadius);
+    if (_maskCache.TryGetValue(key, out int[][]? cached))
+    {
+      return cached;
+    }
+
     int radius = Math.Max(
       (int)Math.Ceiling(maxDistance),
       exceptionalDistance.HasValue ? (int)Math.Ceiling(exceptionalDistance.Value) : 0
@@ -591,6 +599,7 @@ internal class ShowItemEffectRanges : IDisposable
       }
     }
 
+    _maskCache[key] = result;
     return result;
   }
 
