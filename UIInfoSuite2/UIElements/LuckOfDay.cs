@@ -31,6 +31,7 @@ internal class LuckOfDay : IDisposable
 
   private double _lastDailyLuck = double.NaN;
   private string? _cachedLuckText;
+  private int _lastLuckCategory = -999;
 
   private bool Enabled { get; set; }
   private bool ShowExactValue { get; set; }
@@ -115,50 +116,38 @@ internal class LuckOfDay : IDisposable
   {
     if (e.IsMultipleOf(30)) // half second
     {
-      switch (Game1.player.DailyLuck)
+      double luck = Game1.player.DailyLuck;
+      int category = luck switch
       {
-        // Spirits are very happy (FeelingLucky)
-        case var l when l > 0.07:
-          _hoverText.Value = I18n.LuckStatus1();
-          _color.Value = Luck1Color;
-          break;
-        // Spirits are in good humor (LuckyButNotTooLucky)
-        case var l when l > 0.02 && l <= 0.07:
-          _hoverText.Value = I18n.LuckStatus2();
-          _color.Value = Luck2Color;
+        > 0.07 => 1,
+        > 0.02 => 2,
+        0 => 4,
+        >= -0.02 => 3,
+        >= -0.07 => 5,
+        _ => 6
+      };
 
-          break;
-        // The spirits feel neutral
-        case var l when l >= -0.02 && l <= 0.02 && l != 0:
-          _hoverText.Value = I18n.LuckStatus3();
-          _color.Value = Luck3Color;
-
-          break;
-        // The spirits feel absolutely neutral
-        case var l when l == 0:
-          _hoverText.Value = I18n.LuckStatus4();
-          _color.Value = Luck4Color;
-          break;
-        // The spirits are somewhat annoyed (NotFeelingLuckyAtAll)
-        case var l when l >= -0.07 && l < -0.02:
-          _hoverText.Value = I18n.LuckStatus5();
-          _color.Value = Luck5Color;
-
-          break;
-        // The spirits are very displeased (MaybeStayHome)
-        case var l when l < -0.07:
-          _hoverText.Value = I18n.LuckStatus6();
-          _color.Value = Luck6Color;
-          break;
+      if (category != _lastLuckCategory)
+      {
+        _lastLuckCategory = category;
+        (_hoverText.Value, _color.Value) = category switch
+        {
+          1 => (I18n.LuckStatus1(), Luck1Color),
+          2 => (I18n.LuckStatus2(), Luck2Color),
+          3 => (I18n.LuckStatus3(), Luck3Color),
+          4 => (I18n.LuckStatus4(), Luck4Color),
+          5 => (I18n.LuckStatus5(), Luck5Color),
+          _ => (I18n.LuckStatus6(), Luck6Color)
+        };
       }
 
       // Rewrite the text, but keep the color
       if (ShowExactValue)
       {
-        if (Game1.player.DailyLuck != _lastDailyLuck)
+        if (luck != _lastDailyLuck)
         {
-          _lastDailyLuck = Game1.player.DailyLuck;
-          _cachedLuckText = string.Format(I18n.DailyLuckValue(), Game1.player.DailyLuck.ToString("N3"));
+          _lastDailyLuck = luck;
+          _cachedLuckText = string.Format(I18n.DailyLuckValue(), luck.ToString("N3"));
         }
         _hoverText.Value = _cachedLuckText!;
       }
