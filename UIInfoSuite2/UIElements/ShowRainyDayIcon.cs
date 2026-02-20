@@ -110,11 +110,9 @@ internal class ShowRainyDayIcon : IDisposable
 
   private static void RenderWeatherHoverText(LocationWeather weather)
   {
-    bool hasMouse = weather.IconComponent?.containsPoint(Game1.getMouseX(), Game1.getMouseY()) ?? false;
-    bool hasText = !string.IsNullOrEmpty(weather.HoverText);
-    if (weather.IsRainyTomorrow && hasMouse && hasText)
+    if (weather.IsRainyTomorrow)
     {
-      IClickableMenu.drawHoverText(Game1.spriteBatch, weather.HoverText, Game1.dialogueFont);
+      UIElementUtils.DrawHoverTextOnCursor(weather.IconComponent, weather.HoverText);
     }
   }
 #endregion

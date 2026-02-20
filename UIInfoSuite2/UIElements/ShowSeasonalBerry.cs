@@ -111,11 +111,9 @@ internal class ShowSeasonalBerry : IDisposable
   private void OnRenderedHud(object sender, RenderedHudEventArgs e)
   {
     // Show text on hover
-    bool hasMouse = _berryIcon.containsPoint(Game1.getMouseX(), Game1.getMouseY());
-    bool hasText = !string.IsNullOrEmpty(_hoverText);
-    if (_berrySpriteLocation.HasValue && hasMouse && hasText)
+    if (_berrySpriteLocation.HasValue)
     {
-      IClickableMenu.drawHoverText(Game1.spriteBatch, _hoverText, Game1.dialogueFont);
+      UIElementUtils.DrawHoverTextOnCursor(_berryIcon, _hoverText);
     }
   }
 #endregion

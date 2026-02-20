@@ -90,10 +90,7 @@ internal class LuckOfDay : IDisposable
   private void OnRenderedHud(object sender, RenderedHudEventArgs e)
   {
     // draw hover text
-    if (_icon.Value.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
-    {
-      IClickableMenu.drawHoverText(Game1.spriteBatch, _hoverText.Value, Game1.dialogueFont);
-    }
+    UIElementUtils.DrawHoverTextOnCursor(_icon.Value, _hoverText.Value);
   }
 
   private void OnRenderingHud(object sender, RenderingHudEventArgs e)

@@ -103,15 +103,9 @@ internal class ShowQueenOfSauceIcon : IDisposable
 
   private void OnRenderedHud(object sender, RenderedHudEventArgs e)
   {
-    if (_drawQueenOfSauceIcon.Value &&
-        !Game1.IsFakedBlackScreen() &&
-        _icon.Value.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
+    if (_drawQueenOfSauceIcon.Value && !Game1.IsFakedBlackScreen())
     {
-      IClickableMenu.drawHoverText(
-        Game1.spriteBatch,
-        _cachedHoverText,
-        Game1.dialogueFont
-      );
+      UIElementUtils.DrawHoverTextOnCursor(_icon.Value, _cachedHoverText);
     }
   }
 #endregion

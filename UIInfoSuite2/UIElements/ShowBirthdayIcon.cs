@@ -221,11 +221,7 @@ internal class ShowBirthdayIcon : IDisposable
 
     for (var i = 0; i < icons.Count; i++)
     {
-      if (icons[i].containsPoint(Game1.getMouseX(), Game1.getMouseY()))
-      {
-        string hoverText = string.Format(I18n.NpcBirthday(), npcs[i].displayName);
-        IClickableMenu.drawHoverText(Game1.spriteBatch, hoverText, Game1.dialogueFont);
-      }
+      UIElementUtils.DrawHoverTextOnCursor(icons[i], string.Format(I18n.NpcBirthday(), npcs[i].displayName));
     }
   }
 #endregion

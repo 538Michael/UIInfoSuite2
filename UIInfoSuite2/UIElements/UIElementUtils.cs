@@ -32,4 +32,16 @@ public static class UIElementUtils
     icon.bounds.Y = pos.Y;
     icon.draw(Game1.spriteBatch, color, layerDepth);
   }
+
+  public static void DrawHoverTextOnCursor(ClickableTextureComponent? icon, string? hoverText)
+  {
+    if (string.IsNullOrEmpty(hoverText) ||
+        icon is null ||
+        !icon.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
+    {
+      return;
+    }
+
+    IClickableMenu.drawHoverText(Game1.spriteBatch, hoverText, Game1.dialogueFont);
+  }
 }

@@ -96,10 +96,9 @@ public class ShowTravelingMerchant : IDisposable
   private void OnRenderedHud(object sender, RenderedHudEventArgs e)
   {
     // Show text on hover
-    if (ShouldDrawIcon() && _travelingMerchantIcon.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
+    if (ShouldDrawIcon())
     {
-      string hoverText = I18n.TravelingMerchantIsInTown();
-      IClickableMenu.drawHoverText(Game1.spriteBatch, hoverText, Game1.dialogueFont);
+      UIElementUtils.DrawHoverTextOnCursor(_travelingMerchantIcon, I18n.TravelingMerchantIsInTown());
     }
   }
 #endregion

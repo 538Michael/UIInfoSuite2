@@ -136,9 +136,9 @@ internal class ShowToolUpgradeStatus : IDisposable
   private void OnRenderedHud(object? sender, RenderedHudEventArgs e)
   {
     // Show text on hover
-    if (_toolBeingUpgraded.Value != null && _toolUpgradeIcon.Value.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
+    if (_toolBeingUpgraded.Value != null)
     {
-      IClickableMenu.drawHoverText(Game1.spriteBatch, _hoverText.Value, Game1.dialogueFont);
+      UIElementUtils.DrawHoverTextOnCursor(_toolUpgradeIcon.Value, _hoverText.Value);
     }
   }
 #endregion

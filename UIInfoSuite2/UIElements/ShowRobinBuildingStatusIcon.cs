@@ -85,11 +85,9 @@ internal class ShowRobinBuildingStatusIcon : IDisposable
   private void OnRenderedHud(object sender, RenderedHudEventArgs e)
   {
     // Show text on hover
-    if (_IsBuildingInProgress &&
-        (_buildingIcon.Value?.containsPoint(Game1.getMouseX(), Game1.getMouseY()) ?? false) &&
-        !string.IsNullOrEmpty(_hoverText))
+    if (_IsBuildingInProgress)
     {
-      IClickableMenu.drawHoverText(Game1.spriteBatch, _hoverText, Game1.dialogueFont);
+      UIElementUtils.DrawHoverTextOnCursor(_buildingIcon.Value, _hoverText);
     }
   }
 #endregion
