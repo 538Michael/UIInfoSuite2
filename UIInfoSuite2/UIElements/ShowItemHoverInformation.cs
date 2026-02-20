@@ -27,6 +27,8 @@ internal class ShowItemHoverInformation : IDisposable
 
   private readonly IModHelper _helper;
   private readonly Dictionary<int, Color?> _bundleColorCache = new();
+  private static int _minTextWidth;
+  private static readonly Dictionary<int, int> _priceWidthCache = new();
 
   private readonly ClickableTextureComponent _fieldOfficeIcon;
   private readonly PerScreen<Item?> _hoverItem = new();
@@ -206,10 +208,14 @@ internal class ShowItemHoverInformation : IDisposable
         bundleHeaderWidth = 68 + (int)Game1.dialogueFont.MeasureString(requiredBundleName).X;
       }
 
-      var itemTextWidth = (int)Game1.smallFont.MeasureString(itemPrice.ToString()).X;
-      var stackTextWidth = (int)Game1.smallFont.MeasureString(stackPrice.ToString()).X;
-      var cropTextWidth = (int)Game1.smallFont.MeasureString(cropPrice.ToString()).X;
-      var minTextWidth = (int)Game1.smallFont.MeasureString("000").X;
+      int itemTextWidth = GetPriceWidth(itemPrice);
+      int stackTextWidth = GetPriceWidth(stackPrice);
+      int cropTextWidth = GetPriceWidth(cropPrice);
+      if (_minTextWidth == 0)
+      {
+        _minTextWidth = (int)Game1.smallFont.MeasureString("000").X;
+      }
+      int minTextWidth = _minTextWidth;
       // largestTextWidth = 12 + 4 + (icon.Width = 32) + 4 + max(textSize.X) + 8 + 16
       int largestTextWidth =
         76 + Math.Max(minTextWidth, Math.Max(stackTextWidth, Math.Max(itemTextWidth, cropTextWidth)));
@@ -402,6 +408,16 @@ internal class ShowItemHoverInformation : IDisposable
         DrawShippingBin(spriteBatch, windowPos + new Vector2(windowWidth - 6, 8), shippingBinDims / 2);
       }
     }
+  }
+
+  private static int GetPriceWidth(int price)
+  {
+    if (!_priceWidthCache.TryGetValue(price, out int width))
+    {
+      width = (int)Game1.smallFont.MeasureString(price.ToString()).X;
+      _priceWidthCache[price] = width;
+    }
+    return width;
   }
 
   private void DrawSmallTextWithShadow(SpriteBatch b, string text, Vector2 position)
