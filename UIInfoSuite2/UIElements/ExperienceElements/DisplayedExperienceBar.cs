@@ -18,11 +18,13 @@ public class DisplayedExperienceBar
   )
   {
     int barWidth = GetBarWidth(experienceEarnedThisLevel, experienceDifferenceBetweenLevels);
-    float leftSide = GetExperienceBarLeftSide();
+    Rectangle safeArea = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea;
+    float leftSide = GetExperienceBarLeftSide(safeArea);
+    int bottom = safeArea.Bottom;
 
     Game1.drawDialogueBox(
       (int)leftSide,
-      Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 160,
+      bottom - 160,
       285,
       160,
       false,
@@ -31,7 +33,7 @@ public class DisplayedExperienceBar
 
     Game1.spriteBatch.Draw(
       Game1.staminaRect,
-      new Rectangle((int)leftSide + 32, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 63, barWidth, 31),
+      new Rectangle((int)leftSide + 32, bottom - 63, barWidth, 31),
       experienceFillColor
     );
 
@@ -39,7 +41,7 @@ public class DisplayedExperienceBar
       Game1.staminaRect,
       new Rectangle(
         (int)leftSide + 32,
-        Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 63,
+        bottom - 63,
         Math.Min(4, barWidth),
         31
       ),
@@ -48,30 +50,30 @@ public class DisplayedExperienceBar
 
     Game1.spriteBatch.Draw(
       Game1.staminaRect,
-      new Rectangle((int)leftSide + 32, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 63, barWidth, 4),
+      new Rectangle((int)leftSide + 32, bottom - 63, barWidth, 4),
       experienceFillColor
     );
 
     Game1.spriteBatch.Draw(
       Game1.staminaRect,
-      new Rectangle((int)leftSide + 32, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 36, barWidth, 4),
+      new Rectangle((int)leftSide + 32, bottom - 36, barWidth, 4),
       experienceFillColor
     );
 
-    if (IsMouseOverExperienceBar(leftSide))
+    if (IsMouseOverExperienceBar(leftSide, bottom))
     {
       Game1.drawWithBorder(
         experienceEarnedThisLevel + "/" + experienceDifferenceBetweenLevels,
         Color.Black,
         Color.Black,
-        new Vector2(leftSide + 33, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 70)
+        new Vector2(leftSide + 33, bottom - 70)
       );
     }
     else
     {
       Game1.spriteBatch.Draw(
         iconTexture ?? Game1.mouseCursors,
-        new Vector2(leftSide + 54, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 62),
+        new Vector2(leftSide + 54, bottom - 62),
         experienceIconPosition,
         Color.White,
         0,
@@ -85,7 +87,7 @@ public class DisplayedExperienceBar
         currentLevel.ToString(),
         Color.Black * 0.6f,
         Color.Black,
-        new Vector2(leftSide + 33, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 70)
+        new Vector2(leftSide + 33, bottom - 70)
       );
     }
   }
@@ -96,24 +98,24 @@ public class DisplayedExperienceBar
     return (int)((double)experienceEarnedThisLevel / experienceDifferenceBetweenLevels * MaxBarWidth);
   }
 
-  private static float GetExperienceBarLeftSide()
+  private static float GetExperienceBarLeftSide(Rectangle safeArea)
   {
-    float leftSide = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Left;
+    float leftSide = safeArea.Left;
 
     if (Game1.isOutdoorMapSmallerThanViewport())
     {
       int num3 = Game1.currentLocation.map.Layers[0].LayerWidth * Game1.tileSize;
-      leftSide += (Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Right - num3) / 2;
+      leftSide += (safeArea.Right - num3) / 2;
     }
 
     return leftSide;
   }
 
-  private static bool IsMouseOverExperienceBar(float leftSide)
+  private static bool IsMouseOverExperienceBar(float leftSide, int bottom)
   {
     return new Rectangle(
       (int)leftSide - 36,
-      Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 80,
+      bottom - 80,
       305,
       100
     ).Contains(Game1.getMouseX(), Game1.getMouseY());
