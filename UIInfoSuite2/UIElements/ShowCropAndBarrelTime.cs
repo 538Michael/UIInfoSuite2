@@ -219,16 +219,21 @@ internal class ShowCropAndBarrelTime : IDisposable
       fertilizerNames[name] = count + 1;
     }
 
-    IEnumerable<string> formattedNames = fertilizerNames.OrderBy(kv => kv.Value)
-                                                        .ThenBy(kv => kv.Key)
-                                                        .Select(
-                                                          kv =>
-                                                          {
-                                                            string quantityStr = kv.Value == 1 ? "" : $" x{kv.Value}";
-                                                            return $"{kv.Key}{quantityStr}";
-                                                          }
-                                                        );
-    return string.Join(",\n", formattedNames);
+    var sorted = new List<KeyValuePair<string, int>>(fertilizerNames);
+    sorted.Sort((a, b) =>
+    {
+      int cmp = a.Value.CompareTo(b.Value);
+      return cmp != 0 ? cmp : string.Compare(a.Key, b.Key, StringComparison.Ordinal);
+    });
+
+    var sb = new StringBuilder();
+    for (var i = 0; i < sorted.Count; i++)
+    {
+      if (i > 0) sb.Append(",\n");
+      sb.Append(sorted[i].Key);
+      if (sorted[i].Value != 1) sb.Append($" x{sorted[i].Value}");
+    }
+    return sb.ToString();
   }
 
   // See: https://stardewvalleywiki.com/Trees
