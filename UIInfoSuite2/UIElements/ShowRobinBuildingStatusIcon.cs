@@ -15,9 +15,11 @@ internal class ShowRobinBuildingStatusIcon : IDisposable
 {
 #region Properties
   private bool _IsBuildingInProgress;
-  private Rectangle? _buildingIconSpriteLocation;
+  private static readonly Rectangle BuildingIconSpriteLocation = new(0, 196, 15, 14);
   private string _hoverText;
-  private readonly PerScreen<ClickableTextureComponent> _buildingIcon = new();
+  private readonly PerScreen<ClickableTextureComponent> _buildingIcon = new(
+    () => new ClickableTextureComponent(
+      new Rectangle(0, 0, 40, 40), Game1.mouseCursors, Rectangle.Empty, 8 / 3f));
   private Texture2D _robinIconSheet;
 
   private readonly IModHelper _helper;
@@ -72,15 +74,13 @@ internal class ShowRobinBuildingStatusIcon : IDisposable
   private void OnRenderingHud(object sender, RenderingHudEventArgs e)
   {
     // Draw icon
-    if (UIElementUtils.IsRenderingNormally() && _IsBuildingInProgress && _buildingIconSpriteLocation.HasValue)
+    if (UIElementUtils.IsRenderingNormally() && _IsBuildingInProgress && _robinIconSheet != null)
     {
       Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-      _buildingIcon.Value = new ClickableTextureComponent(
-        new Rectangle(iconPosition.X, iconPosition.Y, 40, 40),
-        _robinIconSheet,
-        _buildingIconSpriteLocation.Value,
-        8 / 3f
-      );
+      _buildingIcon.Value.bounds.X = iconPosition.X;
+      _buildingIcon.Value.bounds.Y = iconPosition.Y;
+      _buildingIcon.Value.texture = _robinIconSheet;
+      _buildingIcon.Value.sourceRect = BuildingIconSpriteLocation;
       _buildingIcon.Value.draw(Game1.spriteBatch);
     }
   }
@@ -142,6 +142,11 @@ internal class ShowRobinBuildingStatusIcon : IDisposable
 
   private void FindRobinSpritesheet()
   {
+    if (_robinIconSheet != null)
+    {
+      return;
+    }
+
     Texture2D? foundTexture = Game1.getCharacterFromName("Robin")?.Sprite?.Texture;
     if (foundTexture != null)
     {
@@ -149,16 +154,8 @@ internal class ShowRobinBuildingStatusIcon : IDisposable
     }
     else
     {
-      ModEntry.MonitorObject.Log($"{GetType().Name}: Could not find Robin spritesheet.", LogLevel.Warn);
+      ModEntry.MonitorObject.LogOnce($"{GetType().Name}: Could not find Robin spritesheet.", LogLevel.Warn);
     }
-
-    if (_robinIconSheet == null)
-    {
-      ModEntry.MonitorObject.Log($"{GetType().Name}: Could not find Robin spritesheet.", LogLevel.Warn);
-    }
-
-    _buildingIconSpriteLocation =
-      new Rectangle(0, 195 + 1, 15, 15 - 1); // 1px edits for better alignment with other icons
   }
 #endregion
 }
