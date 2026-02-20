@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Netcode;
@@ -44,16 +43,12 @@ internal class ShowWhenAnimalNeedsPet : IDisposable
   {
     Enabled = showWhenAnimalNeedsPet;
 
-    _helper.Events.Player.Warped -= OnWarped;
-    _helper.Events.Display.RenderingHud -= OnRenderingHud_DrawAnimalHasProduct;
-    _helper.Events.Display.RenderingHud -= OnRenderingHud_DrawNeedsPetTooltip;
+    _helper.Events.Display.RenderingHud -= OnRenderingHud;
     _helper.Events.GameLoop.UpdateTicked -= UpdateTicked;
 
     if (showWhenAnimalNeedsPet)
     {
-      _helper.Events.Player.Warped += OnWarped;
-      _helper.Events.Display.RenderingHud += OnRenderingHud_DrawAnimalHasProduct;
-      _helper.Events.Display.RenderingHud += OnRenderingHud_DrawNeedsPetTooltip;
+      _helper.Events.Display.RenderingHud += OnRenderingHud;
       _helper.Events.GameLoop.UpdateTicked += UpdateTicked;
     }
   }
@@ -67,38 +62,27 @@ internal class ShowWhenAnimalNeedsPet : IDisposable
 
 
 #region Event subscriptions
-  private void OnWarped(object? sender, WarpedEventArgs e) { }
-
-  private void OnRenderingHud_DrawNeedsPetTooltip(object? sender, RenderingHudEventArgs e)
+  private void OnRenderingHud(object? sender, RenderingHudEventArgs e)
   {
-    if (UIElementUtils.IsRenderingNormally() &&
-        Game1.activeClickableMenu == null &&
-        (Game1.currentLocation is AnimalHouse || Game1.currentLocation is Farm || Game1.currentLocation is FarmHouse))
+    if (!UIElementUtils.IsRenderingNormally() || Game1.activeClickableMenu != null)
+    {
+      return;
+    }
+
+    if (Game1.currentLocation is AnimalHouse || Game1.currentLocation is Farm)
     {
       DrawIconForFarmAnimals();
-      DrawIconForPets();
-    }
-  }
-
-  private void OnRenderingHud_DrawAnimalHasProduct(object? sender, RenderingHudEventArgs e)
-  {
-    if (UIElementUtils.IsRenderingNormally() &&
-        Game1.activeClickableMenu == null &&
-        (Game1.currentLocation is AnimalHouse || Game1.currentLocation is Farm))
-    {
       DrawAnimalHasProduct();
+    }
+
+    if (Game1.currentLocation is AnimalHouse || Game1.currentLocation is Farm || Game1.currentLocation is FarmHouse)
+    {
+      DrawIconForPets();
     }
   }
 
   private void UpdateTicked(object? sender, UpdateTickedEventArgs e)
   {
-    if (!UIElementUtils.IsRenderingNormally() ||
-        Game1.activeClickableMenu != null ||
-        !(Game1.currentLocation is AnimalHouse || Game1.currentLocation is Farm || Game1.currentLocation is FarmHouse))
-    {
-      return;
-    }
-
     var sine = (float)Math.Sin(e.Ticks / 20.0);
     _yMovementPerDraw.Value = -6f + 6f * sine;
     _alpha.Value = 0.8f + 0.2f * sine;
