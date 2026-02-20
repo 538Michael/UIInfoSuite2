@@ -25,6 +25,7 @@ internal class ShowCalendarAndBillboardOnGameMenuButton : IDisposable
   );
 
   private readonly IModHelper _helper;
+  private readonly bool _isBiggerBackpackLoaded;
 
   private readonly PerScreen<Item?> _hoverItem = new();
   private readonly PerScreen<Item?> _heldItem = new();
@@ -34,6 +35,7 @@ internal class ShowCalendarAndBillboardOnGameMenuButton : IDisposable
   public ShowCalendarAndBillboardOnGameMenuButton(IModHelper helper)
   {
     _helper = helper;
+    _isBiggerBackpackLoaded = helper.ModRegistry.IsLoaded("spacechase0.BiggerBackpack");
   }
 
   public void Dispose()
@@ -111,7 +113,7 @@ internal class ShowCalendarAndBillboardOnGameMenuButton : IDisposable
     billboardButton.bounds.Y = Game1.activeClickableMenu.yPositionOnScreen +
                                Game1.activeClickableMenu.height -
                                // For compatiblity with BiggerBackpack mod
-                               (_helper.ModRegistry.IsLoaded("spacechase0.BiggerBackpack") ? 230 : 300);
+                               (_isBiggerBackpackLoaded ? 230 : 300);
 
     _showBillboardButton.Value = billboardButton;
     _showBillboardButton.Value.draw(Game1.spriteBatch);
