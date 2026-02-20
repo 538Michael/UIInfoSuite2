@@ -104,11 +104,8 @@ internal class ShowRainyDayIcon : IDisposable
     }
 
     // Draw icon
-    Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-    weather.IconComponent.bounds.X = iconPosition.X;
-    weather.IconComponent.bounds.Y = iconPosition.Y;
     weather.IconComponent.sourceRect = weather.SpriteLocation.Value;
-    weather.IconComponent.draw(Game1.spriteBatch);
+    UIElementUtils.DrawAtNextIconPosition(weather.IconComponent);
   }
 
   private static void RenderWeatherHoverText(LocationWeather weather)

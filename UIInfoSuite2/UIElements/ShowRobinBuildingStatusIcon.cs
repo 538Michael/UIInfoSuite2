@@ -76,12 +76,9 @@ internal class ShowRobinBuildingStatusIcon : IDisposable
     // Draw icon
     if (UIElementUtils.IsRenderingNormally() && _IsBuildingInProgress && _robinIconSheet != null)
     {
-      Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-      _buildingIcon.Value.bounds.X = iconPosition.X;
-      _buildingIcon.Value.bounds.Y = iconPosition.Y;
       _buildingIcon.Value.texture = _robinIconSheet;
       _buildingIcon.Value.sourceRect = BuildingIconSpriteLocation;
-      _buildingIcon.Value.draw(Game1.spriteBatch);
+      UIElementUtils.DrawAtNextIconPosition(_buildingIcon.Value);
     }
   }
 

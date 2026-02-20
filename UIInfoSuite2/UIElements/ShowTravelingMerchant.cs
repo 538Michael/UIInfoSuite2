@@ -89,10 +89,7 @@ public class ShowTravelingMerchant : IDisposable
     // Draw icon
     if (UIElementUtils.IsRenderingNormally() && ShouldDrawIcon())
     {
-      Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-      _travelingMerchantIcon.bounds.X = iconPosition.X;
-      _travelingMerchantIcon.bounds.Y = iconPosition.Y;
-      _travelingMerchantIcon.draw(Game1.spriteBatch);
+      UIElementUtils.DrawAtNextIconPosition(_travelingMerchantIcon);
     }
   }
 

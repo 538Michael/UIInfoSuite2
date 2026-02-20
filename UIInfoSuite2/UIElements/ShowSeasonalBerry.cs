@@ -103,12 +103,9 @@ internal class ShowSeasonalBerry : IDisposable
       return;
     }
 
-    Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-    _berryIcon.bounds.X = iconPosition.X;
-    _berryIcon.bounds.Y = iconPosition.Y;
     _berryIcon.sourceRect = _berrySpriteLocation.Value;
     _berryIcon.scale = _spriteScale;
-    _berryIcon.draw(Game1.spriteBatch);
+    UIElementUtils.DrawAtNextIconPosition(_berryIcon);
   }
 
   private void OnRenderedHud(object sender, RenderedHudEventArgs e)

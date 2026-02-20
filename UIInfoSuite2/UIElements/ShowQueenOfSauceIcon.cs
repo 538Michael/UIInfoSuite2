@@ -96,10 +96,7 @@ internal class ShowQueenOfSauceIcon : IDisposable
     {
       if (_drawQueenOfSauceIcon.Value)
       {
-        Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-        _icon.Value.bounds.X = iconPosition.X;
-        _icon.Value.bounds.Y = iconPosition.Y;
-        _icon.Value.draw(Game1.spriteBatch);
+        UIElementUtils.DrawAtNextIconPosition(_icon.Value);
       }
     }
   }

@@ -101,12 +101,7 @@ internal class LuckOfDay : IDisposable
     // draw dice icon
     if (UIElementUtils.IsRenderingNormally())
     {
-      Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-      ClickableTextureComponent icon = _icon.Value;
-      icon.bounds.X = iconPosition.X;
-      icon.bounds.Y = iconPosition.Y;
-      _icon.Value = icon;
-      _icon.Value.draw(Game1.spriteBatch, _color.Value, 1f);
+      UIElementUtils.DrawAtNextIconPosition(_icon.Value, _color.Value, 1f);
     }
   }
 #endregion

@@ -130,11 +130,7 @@ internal class ShowToolUpgradeStatus : IDisposable
       return;
     }
 
-    Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-    _toolUpgradeIcon.Value.bounds.X = iconPosition.X;
-    _toolUpgradeIcon.Value.bounds.Y = iconPosition.Y;
-
-    _toolUpgradeIcon.Value.draw(e.SpriteBatch);
+    UIElementUtils.DrawAtNextIconPosition(_toolUpgradeIcon.Value);
   }
 
   private void OnRenderedHud(object? sender, RenderedHudEventArgs e)
