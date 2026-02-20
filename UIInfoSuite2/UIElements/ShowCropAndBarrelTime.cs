@@ -209,30 +209,34 @@ internal class ShowCropAndBarrelTime : IDisposable
     );
   }
 
+  private static readonly Dictionary<string, int> _fertilizerNames = new();
+  private static readonly List<KeyValuePair<string, int>> _fertilizerSorted = new();
+
   private static string GetFertilizerString(HoeDirt dirtTile)
   {
-    var fertilizerNames = new Dictionary<string, int>();
+    _fertilizerNames.Clear();
     // Ultimate Fertilizer Integration
     foreach (string fertilizerStr in dirtTile.fertilizer.Value.Split("|"))
     {
       string name = ItemRegistry.GetData(fertilizerStr)?.DisplayName ?? "Unknown Fertilizer";
-      int count = fertilizerNames.GetOrDefault(name);
-      fertilizerNames[name] = count + 1;
+      int count = _fertilizerNames.GetOrDefault(name);
+      _fertilizerNames[name] = count + 1;
     }
 
-    var sorted = new List<KeyValuePair<string, int>>(fertilizerNames);
-    sorted.Sort((a, b) =>
+    _fertilizerSorted.Clear();
+    _fertilizerSorted.AddRange(_fertilizerNames);
+    _fertilizerSorted.Sort((a, b) =>
     {
       int cmp = a.Value.CompareTo(b.Value);
       return cmp != 0 ? cmp : string.Compare(a.Key, b.Key, StringComparison.Ordinal);
     });
 
     var sb = new StringBuilder();
-    for (var i = 0; i < sorted.Count; i++)
+    for (var i = 0; i < _fertilizerSorted.Count; i++)
     {
       if (i > 0) sb.Append(",\n");
-      sb.Append(sorted[i].Key);
-      if (sorted[i].Value != 1) sb.Append($" x{sorted[i].Value}");
+      sb.Append(_fertilizerSorted[i].Key);
+      if (_fertilizerSorted[i].Value != 1) sb.Append($" x{_fertilizerSorted[i].Value}");
     }
     return sb.ToString();
   }
@@ -277,6 +281,12 @@ internal class ShowCropAndBarrelTime : IDisposable
 
   private static class DetailRenderers
   {
+    // Reusable collections to avoid per-frame allocations
+    private static readonly List<Item?> _buildingInputItems = new();
+    private static readonly List<Item?> _buildingOutputItems = new();
+    private static readonly Dictionary<string, int> _itemCountMap = new();
+    private static readonly StringBuilder _machineTimeBuilder = new();
+
     private static string GetInfoStringForDrop(PossibleDroppedItem item)
     {
       (int nextDayToProduce, ParsedItemData? parsedItemData, float chance, string? _) = item;
@@ -288,9 +298,9 @@ internal class ShowCropAndBarrelTime : IDisposable
         : $"{parsedItemData.DisplayName}: {daysUntilReady} {I18n.Days()}{chanceStr}";
     }
 
-    private static Dictionary<string, int> GetItemCountMap(List<Item?> items)
+    private static void PopulateItemCountMap(List<Item?> items, Dictionary<string, int> itemCounter)
     {
-      Dictionary<string, int> itemCounter = new();
+      itemCounter.Clear();
       foreach (Item? outputItem in items)
       {
         if (outputItem is null)
@@ -301,8 +311,6 @@ internal class ShowCropAndBarrelTime : IDisposable
         int count = itemCounter.GetOrDefault(outputItem.DisplayName, 0) + outputItem.Stack;
         itemCounter[outputItem.DisplayName] = count;
       }
-
-      return itemCounter;
     }
 
     public static bool BuildingOutput(Building? building, List<string> entries)
@@ -312,38 +320,37 @@ internal class ShowCropAndBarrelTime : IDisposable
         return false;
       }
 
-      List<Item?> inputItems = new();
-      List<Item?> outputItems = new();
-      MachineHelper.GetBuildingChestItems(building, inputItems, outputItems);
+      _buildingInputItems.Clear();
+      _buildingOutputItems.Clear();
+      MachineHelper.GetBuildingChestItems(building, _buildingInputItems, _buildingOutputItems);
 
-      Dictionary<string, int> inputItemsMap = GetItemCountMap(inputItems);
-      Dictionary<string, int> outputItemsMap = GetItemCountMap(outputItems);
-
-      if (inputItemsMap.Count > 0)
+      PopulateItemCountMap(_buildingInputItems, _itemCountMap);
+      bool hasInput = _itemCountMap.Count > 0;
+      if (hasInput)
       {
         entries.Add($"{I18n.MachineProcessing()}:");
-        foreach ((string displayName, int count) in inputItemsMap)
+        foreach ((string displayName, int count) in _itemCountMap)
         {
           entries.Add($"{displayName} x{count}");
         }
       }
 
-      if (outputItemsMap.Count <= 0)
+      PopulateItemCountMap(_buildingOutputItems, _itemCountMap);
+      if (_itemCountMap.Count <= 0)
       {
         return true;
       }
 
-      if (inputItemsMap.Count > 0)
+      if (hasInput)
       {
         entries.Add("");
       }
 
       entries.Add($"{I18n.MachineDone()}:");
-      foreach ((string displayName, int count) in outputItemsMap)
+      foreach ((string displayName, int count) in _itemCountMap)
       {
         entries.Add($"{displayName} x{count}");
       }
-
 
       return true;
     }
@@ -399,15 +406,15 @@ internal class ShowCropAndBarrelTime : IDisposable
         }
       }
 
-      StringBuilder builder = new();
+      _machineTimeBuilder.Clear();
 
       if (longTime > 0)
       {
-        builder.Append($"{longTime} {longText}, ");
+        _machineTimeBuilder.Append($"{longTime} {longText}, ");
       }
 
-      builder.Append($"{shortTime} {shortText}");
-      entries.Add(builder.ToString());
+      _machineTimeBuilder.Append($"{shortTime} {shortText}");
+      entries.Add(_machineTimeBuilder.ToString());
       return true;
     }
 
