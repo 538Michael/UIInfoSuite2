@@ -493,11 +493,16 @@ internal class ShowItemEffectRanges : IDisposable
   /// </summary>
   private void GetOverlapValue()
   {
-    var temp = new PerScreen<HashSet<Point>>();
-    _effectiveAreaIntersection.Value = _effectiveAreaOther.Value.Intersect(_effectiveAreaCurrent.Value).ToHashSet();
-    temp.Value = _effectiveAreaCurrent.Value.Except(_effectiveAreaOther.Value).ToHashSet();
-    _effectiveAreaOther.Value = _effectiveAreaOther.Value.Except(_effectiveAreaCurrent.Value).ToHashSet();
-    _effectiveAreaOther.Value = _effectiveAreaOther.Value.Union(temp.Value).ToHashSet();
+    _effectiveAreaIntersection.Value.Clear();
+    var current = _effectiveAreaCurrent.Value;
+    var other = _effectiveAreaOther.Value;
+    foreach (Point p in current)
+    {
+      if (other.Remove(p))
+        _effectiveAreaIntersection.Value.Add(p);
+      else
+        other.Add(p);
+    }
   }
 
 #region Distance map
