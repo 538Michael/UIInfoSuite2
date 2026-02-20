@@ -71,9 +71,16 @@ public class ShowTravelingMerchant : IDisposable
 
   private void OnMenuChanged(object sender, MenuChangedEventArgs e)
   {
-    if (e.NewMenu is ShopMenu menu && menu.forSale.Any(s => !(s is Hat)) && Game1.currentLocation.Name == "Forest")
+    if (e.NewMenu is ShopMenu menu && Game1.currentLocation.Name == "Forest")
     {
-      _travelingMerchantIsVisited = true;
+      foreach (ISalable item in menu.forSale)
+      {
+        if (item is not Hat)
+        {
+          _travelingMerchantIsVisited = true;
+          break;
+        }
+      }
     }
   }
 
