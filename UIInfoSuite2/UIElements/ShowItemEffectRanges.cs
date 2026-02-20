@@ -473,12 +473,11 @@ internal class ShowItemEffectRanges : IDisposable
 
     if (!string.IsNullOrEmpty(nameContains))
     {
-      nameContains = nameContains.ToLower();
       OverlaidDictionary? objects = Game1.currentLocation.Objects;
 
       foreach (Object? nextThing in objects.Values)
       {
-        if (nextThing.name.ToLower().Contains(nameContains))
+        if (nextThing.name.IndexOf(nameContains, StringComparison.OrdinalIgnoreCase) >= 0)
         {
           result.Add(nextThing);
         }
