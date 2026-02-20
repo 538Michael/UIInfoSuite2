@@ -185,12 +185,12 @@ internal class ShowWhenAnimalNeedsPet : IDisposable
       }
 
       Vector2 positionAboveAnimal = GetPetPositionAboveAnimal(animal.Value);
-      string animalType = animal.Value.type.Value.ToLower();
+      string animalType = animal.Value.type.Value;
 
-      if (animalType.Contains("cow") ||
-          animalType.Contains("sheep") ||
-          animalType.Contains("goat") ||
-          animalType.Contains("pig"))
+      if (animalType.IndexOf("cow", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          animalType.IndexOf("sheep", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          animalType.IndexOf("goat", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          animalType.IndexOf("pig", StringComparison.OrdinalIgnoreCase) >= 0)
       {
         positionAboveAnimal.X += 50f;
         positionAboveAnimal.Y += 50f;
