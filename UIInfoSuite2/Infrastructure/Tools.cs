@@ -16,6 +16,9 @@ namespace UIInfoSuite2.Infrastructure;
 
 public static class Tools
 {
+  private static readonly HashSet<int> EvenDays = new() { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28 };
+  private static readonly HashSet<int> OddDays = new() { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27 };
+
   public static int GetWidthInPlayArea()
   {
     if (Game1.isOutdoorMapSmallerThanViewport())
@@ -250,13 +253,13 @@ public static class Tools
       string dayStr = parsedGameStateQuery.Query[i];
       if ("even".Equals(dayStr, StringComparison.OrdinalIgnoreCase))
       {
-        days.AddRange(Enumerable.Range(1, 28).Where(x => x % 2 == 0));
+        days.AddRange(EvenDays);
         continue;
       }
 
       if ("odd".Equals(dayStr, StringComparison.OrdinalIgnoreCase))
       {
-        days.AddRange(Enumerable.Range(1, 28).Where(x => x % 2 != 0));
+        days.AddRange(OddDays);
         continue;
       }
 
@@ -271,7 +274,17 @@ public static class Tools
       }
     }
 
-    return parsedGameStateQuery.Negated ? Enumerable.Range(1, 28).Where(x => !days.Contains(x)).ToHashSet() : days;
+    if (!parsedGameStateQuery.Negated)
+    {
+      return days;
+    }
+
+    HashSet<int> negated = new();
+    for (var d = 1; d <= 28; d++)
+    {
+      if (!days.Contains(d)) negated.Add(d);
+    }
+    return negated;
   }
 
   public static int? GetNextDayFromCondition(string? condition, bool includeToday = true)
