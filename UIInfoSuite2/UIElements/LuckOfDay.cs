@@ -29,6 +29,9 @@ internal class LuckOfDay : IDisposable
 
   private readonly IModHelper _helper;
 
+  private double _lastDailyLuck = double.NaN;
+  private string? _cachedLuckText;
+
   private bool Enabled { get; set; }
   private bool ShowExactValue { get; set; }
 
@@ -152,7 +155,12 @@ internal class LuckOfDay : IDisposable
       // Rewrite the text, but keep the color
       if (ShowExactValue)
       {
-        _hoverText.Value = string.Format(I18n.DailyLuckValue(), Game1.player.DailyLuck.ToString("N3"));
+        if (Game1.player.DailyLuck != _lastDailyLuck)
+        {
+          _lastDailyLuck = Game1.player.DailyLuck;
+          _cachedLuckText = string.Format(I18n.DailyLuckValue(), Game1.player.DailyLuck.ToString("N3"));
+        }
+        _hoverText.Value = _cachedLuckText!;
       }
     }
   }
