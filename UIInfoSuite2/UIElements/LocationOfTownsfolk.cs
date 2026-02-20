@@ -28,6 +28,7 @@ internal class LocationOfTownsfolk : IDisposable
   private readonly IModHelper _helper;
 
   private static readonly Dictionary<string, int> _nameWidthCache = new();
+  private static readonly StringBuilder _namesBuilder = new();
 
   private const int SocialPanelWidth = 190;
   private const int SocialPanelXOffset = 160;
@@ -418,7 +419,8 @@ internal class LocationOfTownsfolk : IDisposable
       return;
     }
 
-    var text = new StringBuilder();
+    _namesBuilder.Clear();
+    var text = _namesBuilder;
     var longestLength = 0;
     foreach (string name in namesToShow)
     {
