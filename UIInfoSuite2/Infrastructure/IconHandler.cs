@@ -19,7 +19,7 @@ public sealed class IconHandler
   {
     int yPos = Game1.options.zoomButtons ? 290 : 260;
     int xPosition = Tools.GetWidthInPlayArea() - 70 - 48 * _amountOfVisibleIcons.Value;
-    if (IsQuestLogPermanent || Game1.player.questLog.Any() || Game1.player.team.specialOrders.Any())
+    if (IsQuestLogPermanent || Game1.player.questLog.Count > 0 || Game1.player.team.specialOrders.Count > 0)
     {
       xPosition -= 65;
     }
