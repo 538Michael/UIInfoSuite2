@@ -93,7 +93,14 @@ public static class Tools
 
     if (Game1.activeClickableMenu == null && Game1.onScreenMenus != null)
     {
-      hoverItem = Game1.onScreenMenus.OfType<Toolbar>().Select(tb => tb.hoverItem).FirstOrDefault(hi => hi is not null);
+      foreach (IClickableMenu menu in Game1.onScreenMenus)
+      {
+        if (menu is Toolbar tb && tb.hoverItem is not null)
+        {
+          hoverItem = tb.hoverItem;
+          break;
+        }
+      }
     }
 
     if (Game1.activeClickableMenu is GameMenu gameMenu && gameMenu.GetCurrentPage() is InventoryPage inventory)
