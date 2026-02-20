@@ -140,12 +140,12 @@ internal class ShowQueenOfSauceIcon : IDisposable
 
   private void CheckForNewRecipe()
   {
-    int recipiesKnownBeforeTvCall = Game1.player.cookingRecipes.Count();
+    int recipiesKnownBeforeTvCall = Game1.player.cookingRecipes.Length;
     string[] dialogue = new QueenOfSauceTV().GetWeeklyRecipe();
     // TODO fix nullability reference
     _todaysRecipe = new CraftingRecipe(_recipesByDescription.GetOrDefault(dialogue[0], ""), true);
 
-    if (Game1.player.cookingRecipes.Count() > recipiesKnownBeforeTvCall)
+    if (Game1.player.cookingRecipes.Length > recipiesKnownBeforeTvCall)
     {
       Game1.player.cookingRecipes.Remove(_todaysRecipe.name);
     }
