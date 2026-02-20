@@ -30,7 +30,10 @@ internal class ShowQueenOfSauceIcon : IDisposable
   private readonly PerScreen<bool> _drawQueenOfSauceIcon = new();
 
   //private bool _drawDishOfDayIcon = false;
-  private readonly PerScreen<ClickableTextureComponent> _icon = new();
+  private readonly PerScreen<ClickableTextureComponent> _icon = new(
+    () => new ClickableTextureComponent(
+      new Rectangle(0, 0, 40, 40), Game1.mouseCursors, new Rectangle(609, 361, 28, 28), 1.3f));
+  private string _cachedHoverText = string.Empty;
 
   private readonly IModHelper _helper;
 #endregion
@@ -94,13 +97,8 @@ internal class ShowQueenOfSauceIcon : IDisposable
       if (_drawQueenOfSauceIcon.Value)
       {
         Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-
-        _icon.Value = new ClickableTextureComponent(
-          new Rectangle(iconPosition.X, iconPosition.Y, 40, 40),
-          Game1.mouseCursors,
-          new Rectangle(609, 361, 28, 28),
-          1.3f
-        );
+        _icon.Value.bounds.X = iconPosition.X;
+        _icon.Value.bounds.Y = iconPosition.Y;
         _icon.Value.draw(Game1.spriteBatch);
       }
     }
@@ -110,11 +108,11 @@ internal class ShowQueenOfSauceIcon : IDisposable
   {
     if (_drawQueenOfSauceIcon.Value &&
         !Game1.IsFakedBlackScreen() &&
-        (_icon.Value?.containsPoint(Game1.getMouseX(), Game1.getMouseY()) ?? false))
+        _icon.Value.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
     {
       IClickableMenu.drawHoverText(
         Game1.spriteBatch,
-        I18n.TodaysRecipe() + _todaysRecipe.DisplayName,
+        _cachedHoverText,
         Game1.dialogueFont
       );
     }
@@ -153,6 +151,7 @@ internal class ShowQueenOfSauceIcon : IDisposable
     _drawQueenOfSauceIcon.Value = (Game1.dayOfMonth % 7 == 0 || (Game1.dayOfMonth - 3) % 7 == 0) &&
                                   Game1.stats.DaysPlayed > 5 &&
                                   !Game1.player.knowsRecipe(_todaysRecipe.name);
+    _cachedHoverText = I18n.TodaysRecipe() + _todaysRecipe.DisplayName;
   }
 #endregion
 }
