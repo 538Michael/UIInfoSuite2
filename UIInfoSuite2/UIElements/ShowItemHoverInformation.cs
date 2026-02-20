@@ -183,12 +183,14 @@ internal class ShowItemHoverInformation : IDisposable
 
       string? requiredBundleName = null;
       Color? bundleColor = null;
+      var bundleHeaderWidth = 0;
       if (hoveredObject != null)
       {
         BundleRequiredItem? bundleDisplayData = BundleHelper.GetBundleItemIfNotDonated(hoveredObject);
         if (bundleDisplayData != null)
         {
           requiredBundleName = bundleDisplayData.Name;
+          bundleHeaderWidth = bundleDisplayData.BannerWidth;
 
           if (!_bundleColorCache.TryGetValue(bundleDisplayData.Id, out bundleColor))
           {
@@ -200,13 +202,6 @@ internal class ShowItemHoverInformation : IDisposable
 
       var drawPositionOffset = new Vector2();
       int windowWidth, windowHeight;
-
-      var bundleHeaderWidth = 0;
-      if (!string.IsNullOrEmpty(requiredBundleName))
-      {
-        // bundleHeaderWidth = ((bundleIcon.Width * 3 = 45) - 7 = 38) + 3 + bundleTextSize.X + 3 + ((shippingBin.Width * 1.2 = 36) - 12 = 24)
-        bundleHeaderWidth = 68 + (int)Game1.dialogueFont.MeasureString(requiredBundleName).X;
-      }
 
       int itemTextWidth = GetPriceWidth(itemPrice);
       int stackTextWidth = GetPriceWidth(stackPrice);

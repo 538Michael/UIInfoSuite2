@@ -18,6 +18,7 @@ public record BundleKeyData(string Name, int Color);
 internal static class BundleHelper
 {
   private static readonly Dictionary<int, BundleKeyData> BundleIdToBundleKeyDataMap = new();
+  private static readonly Dictionary<string, int> BannerWidthCache = new();
 
   public static BundleKeyData? GetBundleKeyDataFromIndex(int bundleIdx, bool forceRefresh = false)
   {
@@ -45,7 +46,12 @@ internal static class BundleHelper
 
   private static int GetBundleBannerWidthForName(string bundleName)
   {
-    return 68 + (int)Game1.dialogueFont.MeasureString(bundleName).X;
+    if (!BannerWidthCache.TryGetValue(bundleName, out int width))
+    {
+      width = 68 + (int)Game1.dialogueFont.MeasureString(bundleName).X;
+      BannerWidthCache[bundleName] = width;
+    }
+    return width;
   }
 
   public static BundleRequiredItem? GetBundleItemIfNotDonated(Item item)
