@@ -7,6 +7,8 @@ namespace UIInfoSuite2.UIElements;
 
 public static class UIElementUtils
 {
+  public const float DefaultIconScale = 8 / 3f;
+
   public static bool IsRenderingNormally()
   {
     return !Game1.game1.takingMapScreenshot &&

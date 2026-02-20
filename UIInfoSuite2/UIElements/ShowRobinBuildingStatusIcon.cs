@@ -19,7 +19,7 @@ internal class ShowRobinBuildingStatusIcon : IDisposable
   private string _hoverText;
   private readonly PerScreen<ClickableTextureComponent> _buildingIcon = new(
     () => new ClickableTextureComponent(
-      new Rectangle(0, 0, 40, 40), Game1.mouseCursors, Rectangle.Empty, 8 / 3f));
+      new Rectangle(0, 0, 40, 40), Game1.mouseCursors, Rectangle.Empty, UIElementUtils.DefaultIconScale));
   private Texture2D _robinIconSheet;
 
   private readonly IModHelper _helper;

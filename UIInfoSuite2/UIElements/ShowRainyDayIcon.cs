@@ -38,9 +38,9 @@ internal class ShowRainyDayIcon : IDisposable
     _helper = helper;
     CreateTileSheet();
     _valleyWeather.IconComponent = new ClickableTextureComponent(
-      new Rectangle(0, 0, 40, 40), _iconSheet, Rectangle.Empty, 8 / 3f);
+      new Rectangle(0, 0, 40, 40), _iconSheet, Rectangle.Empty, UIElementUtils.DefaultIconScale);
     _islandWeather.IconComponent = new ClickableTextureComponent(
-      new Rectangle(0, 0, 40, 40), _iconSheet, Rectangle.Empty, 8 / 3f);
+      new Rectangle(0, 0, 40, 40), _iconSheet, Rectangle.Empty, UIElementUtils.DefaultIconScale);
   }
 
   public void Dispose()

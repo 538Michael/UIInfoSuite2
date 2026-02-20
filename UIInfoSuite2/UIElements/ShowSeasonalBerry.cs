@@ -20,7 +20,7 @@ internal class ShowSeasonalBerry : IDisposable
       case "spring" when day is >= 15 and <= 18:
         _berrySpriteLocation = new Rectangle(128, 193, 15, 15);
         _hoverText = I18n.CanFindSalmonberry();
-        _spriteScale = 8 / 3f;
+        _spriteScale = UIElementUtils.DefaultIconScale;
         break;
       case "fall" when day is >= 8 and <= 11:
         _berrySpriteLocation = new Rectangle(32, 272, 16, 16);
@@ -41,10 +41,10 @@ internal class ShowSeasonalBerry : IDisposable
 
 #region Properties
   private Rectangle? _berrySpriteLocation;
-  private float _spriteScale = 8 / 3f;
+  private float _spriteScale = UIElementUtils.DefaultIconScale;
   private string _hoverText;
   private readonly ClickableTextureComponent _berryIcon = new(
-    new Rectangle(0, 0, 40, 40), Game1.objectSpriteSheet, Rectangle.Empty, 8 / 3f);
+    new Rectangle(0, 0, 40, 40), Game1.objectSpriteSheet, Rectangle.Empty, UIElementUtils.DefaultIconScale);
 
   private readonly IModHelper _helper;
 
