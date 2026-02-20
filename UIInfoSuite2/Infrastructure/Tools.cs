@@ -21,16 +21,15 @@ public static class Tools
 
   public static int GetWidthInPlayArea()
   {
+    int right = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Right;
+
     if (Game1.isOutdoorMapSmallerThanViewport())
     {
-      int right = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Right;
       int totalWidth = Game1.currentLocation.map.Layers[0].LayerWidth * Game1.tileSize;
-      int someOtherWidth = Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Right - totalWidth;
-
-      return right - someOtherWidth / 2;
+      return right - (right - totalWidth) / 2;
     }
 
-    return Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Right;
+    return right;
   }
 
   public static int GetSellToStorePrice(Item item)
