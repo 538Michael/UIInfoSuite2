@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,6 +28,8 @@ internal class LocationOfTownsfolk : IDisposable
 
   private static readonly Dictionary<string, int> _nameWidthCache = new();
   private static readonly StringBuilder _namesBuilder = new();
+
+  private readonly List<string> _namesToShow = new();
 
   private const int SocialPanelWidth = 190;
   private const int SocialPanelXOffset = 160;
@@ -112,7 +113,7 @@ internal class LocationOfTownsfolk : IDisposable
 
     if (isRsvWorldMap)
     {
-      ModEntry.MonitorObject.Log("Not Rendering Villagers, in RSV Map");
+      ModEntry.MonitorObject.LogOnce("Not Rendering Villagers, in RSV Map");
       return;
     }
 
@@ -271,7 +272,7 @@ internal class LocationOfTownsfolk : IDisposable
 
   private void DrawNPCLocationsOnMap(GameMenu gameMenu)
   {
-    var namesToShow = new List<string>();
+    _namesToShow.Clear();
     foreach (NPC character in _townsfolk)
     {
       try
@@ -282,7 +283,7 @@ internal class LocationOfTownsfolk : IDisposable
                                    character.IsInvisible != true;
         if (shouldDrawCharacter)
         {
-          DrawNPC(character, namesToShow);
+          DrawNPC(character, _namesToShow);
         }
       }
       catch (Exception ex)
@@ -291,7 +292,7 @@ internal class LocationOfTownsfolk : IDisposable
       }
     }
 
-    DrawNPCNames(namesToShow);
+    DrawNPCNames(_namesToShow);
 
     //The cursor needs to show up in front of the character faces
     Tools.DrawMouseCursor();
