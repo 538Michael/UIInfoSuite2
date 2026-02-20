@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -16,7 +15,8 @@ public class ShowTravelingMerchant : IDisposable
 #region Properties
   private bool _travelingMerchantIsHere;
   private bool _travelingMerchantIsVisited;
-  private ClickableTextureComponent _travelingMerchantIcon;
+  private readonly ClickableTextureComponent _travelingMerchantIcon = new(
+    new Rectangle(0, 0, 40, 40), Game1.mouseCursors, new Rectangle(192, 1411, 20, 20), 2f);
 
   private bool Enabled { get; set; }
   private bool HideWhenVisited { get; set; }
@@ -90,12 +90,8 @@ public class ShowTravelingMerchant : IDisposable
     if (UIElementUtils.IsRenderingNormally() && ShouldDrawIcon())
     {
       Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-      _travelingMerchantIcon = new ClickableTextureComponent(
-        new Rectangle(iconPosition.X, iconPosition.Y, 40, 40),
-        Game1.mouseCursors,
-        new Rectangle(192, 1411, 20, 20),
-        2f
-      );
+      _travelingMerchantIcon.bounds.X = iconPosition.X;
+      _travelingMerchantIcon.bounds.Y = iconPosition.Y;
       _travelingMerchantIcon.draw(Game1.spriteBatch);
     }
   }
@@ -103,7 +99,7 @@ public class ShowTravelingMerchant : IDisposable
   private void OnRenderedHud(object sender, RenderedHudEventArgs e)
   {
     // Show text on hover
-    if (ShouldDrawIcon() && (_travelingMerchantIcon?.containsPoint(Game1.getMouseX(), Game1.getMouseY()) ?? false))
+    if (ShouldDrawIcon() && _travelingMerchantIcon.containsPoint(Game1.getMouseX(), Game1.getMouseY()))
     {
       string hoverText = I18n.TravelingMerchantIsInTown();
       IClickableMenu.drawHoverText(Game1.spriteBatch, hoverText, Game1.dialogueFont);
