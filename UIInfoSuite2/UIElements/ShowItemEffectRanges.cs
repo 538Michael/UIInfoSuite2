@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -257,7 +256,7 @@ internal class ShowItemEffectRanges : IDisposable
                   int[][] arrayToUse_ = next.Name.IndexOf("eluxe", StringComparison.OrdinalIgnoreCase) >= 0
                     ? GetDistanceArray(ObjectsWithDistance.DeluxeScarecrow, false, next)
                     : GetDistanceArray(ObjectsWithDistance.Scarecrow, false, next);
-                  if (!arrayToUse_.SequenceEqual(arrayToUse))
+                  if (!ReferenceEquals(arrayToUse_, arrayToUse))
                   {
                     AddTilesToHighlightedArea(arrayToUse, false, (int)next.TileLocation.X, (int)next.TileLocation.Y);
                   }
