@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -25,6 +26,7 @@ internal class ShowItemHoverInformation : IDisposable
   );
 
   private readonly IModHelper _helper;
+  private readonly Dictionary<int, Color?> _bundleColorCache = new();
 
   private readonly ClickableTextureComponent _fieldOfficeIcon;
   private readonly PerScreen<Item?> _hoverItem = new();
@@ -102,6 +104,7 @@ internal class ShowItemHoverInformation : IDisposable
     if (showItemHoverInformation)
     {
       _libraryMuseum = Game1.getLocationFromName("ArchaeologyHouse") as LibraryMuseum;
+      _bundleColorCache.Clear();
 
       _helper.Events.Display.RenderedActiveMenu += OnRenderedActiveMenu;
       _helper.Events.Display.RenderedHud += OnRenderedHud;
@@ -185,8 +188,11 @@ internal class ShowItemHoverInformation : IDisposable
         {
           requiredBundleName = bundleDisplayData.Name;
 
-          // TODO cache these colors so we're not doing it every time
-          bundleColor = BundleHelper.GetRealColorFromIndex(bundleDisplayData.Id)?.Desaturate(0.35f);
+          if (!_bundleColorCache.TryGetValue(bundleDisplayData.Id, out bundleColor))
+          {
+            bundleColor = BundleHelper.GetRealColorFromIndex(bundleDisplayData.Id)?.Desaturate(0.35f);
+            _bundleColorCache[bundleDisplayData.Id] = bundleColor;
+          }
         }
       }
 
