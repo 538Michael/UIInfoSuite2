@@ -2,8 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
-using StardewValley.Menus;
-
 namespace UIInfoSuite2.UIElements.ExperienceElements;
 
 public class DisplayedExperienceBar
@@ -113,20 +111,12 @@ public class DisplayedExperienceBar
 
   private static bool IsMouseOverExperienceBar(float leftSide)
   {
-    return GetExperienceBarTextureComponent(leftSide).containsPoint(Game1.getMouseX(), Game1.getMouseY());
-  }
-
-  private static ClickableTextureComponent GetExperienceBarTextureComponent(float leftSide)
-  {
-    return new ClickableTextureComponent(
-      "",
-      new Rectangle((int)leftSide - 36, Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 80, 305, 100),
-      "",
-      "",
-      Game1.mouseCursors,
-      new Rectangle(0, 0, 0, 0),
-      Game1.pixelZoom
-    );
+    return new Rectangle(
+      (int)leftSide - 36,
+      Game1.graphics.GraphicsDevice.Viewport.TitleSafeArea.Bottom - 80,
+      305,
+      100
+    ).Contains(Game1.getMouseX(), Game1.getMouseY());
   }
 #endregion
 }
