@@ -71,8 +71,12 @@ internal class ShowWhenAnimalNeedsPet : IDisposable
 
     if (Game1.currentLocation is AnimalHouse || Game1.currentLocation is Farm)
     {
-      DrawIconForFarmAnimals();
-      DrawAnimalHasProduct();
+      NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animals = GetAnimalsInCurrentLocation();
+      if (animals != null)
+      {
+        DrawIconForFarmAnimals(animals);
+        DrawAnimalHasProduct(animals);
+      }
     }
 
     if (Game1.currentLocation is AnimalHouse || Game1.currentLocation is Farm || Game1.currentLocation is FarmHouse)
@@ -90,14 +94,8 @@ internal class ShowWhenAnimalNeedsPet : IDisposable
 #endregion
 
 #region Logic
-  private void DrawAnimalHasProduct()
+  private void DrawAnimalHasProduct(NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>> animalsInCurrentLocation)
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation = GetAnimalsInCurrentLocation();
-    if (animalsInCurrentLocation == null)
-    {
-      return;
-    }
-
     foreach (KeyValuePair<long, FarmAnimal> animal in animalsInCurrentLocation.Pairs)
     {
       FarmAnimalHarvestType? harvestType = animal.Value.GetHarvestType();
@@ -150,15 +148,8 @@ internal class ShowWhenAnimalNeedsPet : IDisposable
     }
   }
 
-  private void DrawIconForFarmAnimals()
+  private void DrawIconForFarmAnimals(NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>> animalsInCurrentLocation)
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation = GetAnimalsInCurrentLocation();
-
-    if (animalsInCurrentLocation == null)
-    {
-      return;
-    }
-
     foreach (KeyValuePair<long, FarmAnimal> animal in animalsInCurrentLocation.Pairs)
     {
       if (animal.Value.IsEmoting ||
