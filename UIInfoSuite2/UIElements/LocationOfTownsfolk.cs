@@ -27,6 +27,8 @@ internal class LocationOfTownsfolk : IDisposable
   private readonly ModOptions _options;
   private readonly IModHelper _helper;
 
+  private static readonly Dictionary<string, int> _nameWidthCache = new();
+
   private const int SocialPanelWidth = 190;
   private const int SocialPanelXOffset = 160;
 #endregion
@@ -421,7 +423,12 @@ internal class LocationOfTownsfolk : IDisposable
     foreach (string name in namesToShow)
     {
       text.AppendLine(name);
-      longestLength = Math.Max(longestLength, (int)Math.Ceiling(Game1.smallFont.MeasureString(name).Length()));
+      if (!_nameWidthCache.TryGetValue(name, out int width))
+      {
+        width = (int)Math.Ceiling(Game1.smallFont.MeasureString(name).Length());
+        _nameWidthCache[name] = width;
+      }
+      longestLength = Math.Max(longestLength, width);
     }
 
     int windowHeight = Game1.smallFont.LineSpacing * namesToShow.Count + 25;
