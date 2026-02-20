@@ -217,8 +217,17 @@ internal class ShowWhenAnimalNeedsPet : IDisposable
     foreach (NPC? character in Game1.currentLocation.characters)
     {
       if (character is not Pet pet ||
-          pet.lastPetDay.Values.Any(day => day == Game1.Date.TotalDays) ||
           (pet.friendshipTowardFarmer.Value >= 1000 && HideOnMaxFriendship))
+      {
+        continue;
+      }
+
+      bool wasPetToday = false;
+      foreach (int day in pet.lastPetDay.Values)
+      {
+        if (day == Game1.Date.TotalDays) { wasPetToday = true; break; }
+      }
+      if (wasPetToday)
       {
         continue;
       }
