@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -43,6 +42,7 @@ internal class ShowCropAndBarrelTime : IDisposable
   private readonly PerScreen<TerrainFeature?> _currentTerrain = new();
   private readonly PerScreen<Object?> _currentTile = new();
   private readonly PerScreen<Building?> _currentTileBuilding = new();
+  private readonly PerScreen<List<string>> _lines = new(() => new List<string>());
 
   private readonly IModHelper _helper;
 
@@ -141,7 +141,8 @@ internal class ShowCropAndBarrelTime : IDisposable
       return;
     }
 
-    List<string> lines = new();
+    List<string> lines = _lines.Value;
+    lines.Clear();
     Vector2 tile = Vector2.Zero;
     Building? currentTileBuilding = _currentTileBuilding.Value;
     Object? currentTile = _currentTile.Value;
@@ -512,7 +513,10 @@ internal class ShowCropAndBarrelTime : IDisposable
         return true;
       }
 
-      entries.AddRange(treeInfo.Items.Select(GetInfoStringForDrop));
+      foreach (PossibleDroppedItem item in treeInfo.Items)
+      {
+        entries.Add(GetInfoStringForDrop(item));
+      }
       return true;
     }
 
@@ -591,7 +595,10 @@ internal class ShowCropAndBarrelTime : IDisposable
         return true;
       }
 
-      entries.AddRange(droppedItems.Select(GetInfoStringForDrop));
+      foreach (PossibleDroppedItem item in droppedItems)
+      {
+        entries.Add(GetInfoStringForDrop(item));
+      }
       return true;
     }
   }
