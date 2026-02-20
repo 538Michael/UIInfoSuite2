@@ -43,7 +43,8 @@ internal class ShowSeasonalBerry : IDisposable
   private Rectangle? _berrySpriteLocation;
   private float _spriteScale = 8 / 3f;
   private string _hoverText;
-  private ClickableTextureComponent _berryIcon;
+  private readonly ClickableTextureComponent _berryIcon = new(
+    new Rectangle(0, 0, 40, 40), Game1.objectSpriteSheet, Rectangle.Empty, 8 / 3f);
 
   private readonly IModHelper _helper;
 
@@ -103,19 +104,17 @@ internal class ShowSeasonalBerry : IDisposable
     }
 
     Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-    _berryIcon = new ClickableTextureComponent(
-      new Rectangle(iconPosition.X, iconPosition.Y, 40, 40),
-      Game1.objectSpriteSheet,
-      _berrySpriteLocation.Value,
-      _spriteScale
-    );
+    _berryIcon.bounds.X = iconPosition.X;
+    _berryIcon.bounds.Y = iconPosition.Y;
+    _berryIcon.sourceRect = _berrySpriteLocation.Value;
+    _berryIcon.scale = _spriteScale;
     _berryIcon.draw(Game1.spriteBatch);
   }
 
   private void OnRenderedHud(object sender, RenderedHudEventArgs e)
   {
     // Show text on hover
-    bool hasMouse = _berryIcon?.containsPoint(Game1.getMouseX(), Game1.getMouseY()) ?? false;
+    bool hasMouse = _berryIcon.containsPoint(Game1.getMouseX(), Game1.getMouseY());
     bool hasText = !string.IsNullOrEmpty(_hoverText);
     if (_berrySpriteLocation.HasValue && hasMouse && hasText)
     {
