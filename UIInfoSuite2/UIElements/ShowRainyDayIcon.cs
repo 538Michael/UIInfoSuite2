@@ -37,6 +37,10 @@ internal class ShowRainyDayIcon : IDisposable
   {
     _helper = helper;
     CreateTileSheet();
+    _valleyWeather.IconComponent = new ClickableTextureComponent(
+      new Rectangle(0, 0, 40, 40), _iconSheet, Rectangle.Empty, 8 / 3f);
+    _islandWeather.IconComponent = new ClickableTextureComponent(
+      new Rectangle(0, 0, 40, 40), _iconSheet, Rectangle.Empty, 8 / 3f);
   }
 
   public void Dispose()
@@ -49,20 +53,26 @@ internal class ShowRainyDayIcon : IDisposable
   {
     _helper.Events.Display.RenderingHud -= OnRenderingHud;
     _helper.Events.Display.RenderedHud -= OnRenderedHud;
+    _helper.Events.GameLoop.DayStarted -= OnDayStarted;
 
     if (showRainyDay)
     {
+      GetWeatherIconSpriteLocation();
       _helper.Events.Display.RenderingHud += OnRenderingHud;
       _helper.Events.Display.RenderedHud += OnRenderedHud;
+      _helper.Events.GameLoop.DayStarted += OnDayStarted;
     }
   }
 #endregion
 
 #region Event subscriptions
-  private void OnRenderingHud(object sender, RenderingHudEventArgs e)
+  private void OnDayStarted(object sender, DayStartedEventArgs e)
   {
     GetWeatherIconSpriteLocation();
+  }
 
+  private void OnRenderingHud(object sender, RenderingHudEventArgs e)
+  {
     if (!UIElementUtils.IsRenderingNormally())
     {
       return;
@@ -95,12 +105,9 @@ internal class ShowRainyDayIcon : IDisposable
 
     // Draw icon
     Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-    weather.IconComponent = new ClickableTextureComponent(
-      new Rectangle(iconPosition.X, iconPosition.Y, 40, 40),
-      _iconSheet,
-      weather.SpriteLocation.Value,
-      8 / 3f
-    );
+    weather.IconComponent.bounds.X = iconPosition.X;
+    weather.IconComponent.bounds.Y = iconPosition.Y;
+    weather.IconComponent.sourceRect = weather.SpriteLocation.Value;
     weather.IconComponent.draw(Game1.spriteBatch);
   }
 
