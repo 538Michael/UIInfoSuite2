@@ -54,42 +54,8 @@ internal class ShowItemHoverInformation : IDisposable
   {
     _helper = helper;
 
-    NPC? gunther = Game1.getCharacterFromName("Gunther");
-    if (gunther == null)
-    {
-      ModEntry.MonitorObject.Log(
-        $"{GetType().Name}: Could not find Gunther in the game, creating a fake one for ourselves.",
-        LogLevel.Warn
-      );
-      gunther = new NPC { Name = "Gunther", Age = 0, Sprite = new AnimatedSprite("Characters\\Gunther") };
-    }
-
-    _museumIcon = new ClickableTextureComponent(
-      new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
-      gunther.Sprite.Texture,
-      gunther.GetHeadShot(),
-      Game1.pixelZoom
-    );
-
-    NPC? professorSnail = Game1.getCharacterFromName("Professor Snail");
-    if (professorSnail == null)
-    {
-      ModEntry.MonitorObject.Log(
-        $"{GetType().Name}: Could not find Professor Snail in the game, creating a fake one for ourselves.",
-        LogLevel.Warn
-      );
-      professorSnail = new NPC
-      {
-        Name = "Professor Snail", Age = 0, Sprite = new AnimatedSprite("Characters\\SafariGuy")
-      };
-    }
-
-    _fieldOfficeIcon = new ClickableTextureComponent(
-      new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
-      professorSnail.Sprite.Texture,
-      professorSnail.GetHeadShot(),
-      Game1.pixelZoom
-    );
+    _museumIcon = CreateNPCHeadIcon("Gunther", "Characters\\Gunther");
+    _fieldOfficeIcon = CreateNPCHeadIcon("Professor Snail", "Characters\\SafariGuy");
   }
 
   public void Dispose()
@@ -304,7 +270,7 @@ internal class ShowItemHoverInformation : IDisposable
           0.95f
         );
 
-        DrawSmallTextWithShadow(spriteBatch, itemPrice.ToString(), drawPosition + textOffset);
+        UIElementUtils.DrawTextWithShadow(spriteBatch, Game1.smallFont, itemPrice.ToString(), drawPosition + textOffset, Game1.textColor, Game1.textShadowColor, new Vector2(2, 2));
 
         drawPosition.Y += rowHeight;
       }
@@ -335,7 +301,7 @@ internal class ShowItemHoverInformation : IDisposable
           0.95f
         );
 
-        DrawSmallTextWithShadow(spriteBatch, stackPrice.ToString(), drawPosition + textOffset);
+        UIElementUtils.DrawTextWithShadow(spriteBatch, Game1.smallFont, stackPrice.ToString(), drawPosition + textOffset, Game1.textColor, Game1.textShadowColor, new Vector2(2, 2));
 
         drawPosition.Y += rowHeight;
       }
@@ -354,7 +320,7 @@ internal class ShowItemHoverInformation : IDisposable
           0.85f
         );
 
-        DrawSmallTextWithShadow(spriteBatch, cropPrice.ToString(), drawPosition + textOffset);
+        UIElementUtils.DrawTextWithShadow(spriteBatch, Game1.smallFont, cropPrice.ToString(), drawPosition + textOffset, Game1.textColor, Game1.textShadowColor, new Vector2(2, 2));
       }
 
       if (notDonatedYet)
@@ -415,12 +381,6 @@ internal class ShowItemHoverInformation : IDisposable
     return width;
   }
 
-  private void DrawSmallTextWithShadow(SpriteBatch b, string text, Vector2 position)
-  {
-    b.DrawString(Game1.smallFont, text, position + new Vector2(2, 2), Game1.textShadowColor);
-    b.DrawString(Game1.smallFont, text, position, Game1.textColor);
-  }
-
   private void DrawBundleBanner(
     SpriteBatch spriteBatch,
     string bundleName,
@@ -470,6 +430,26 @@ internal class ShowItemHoverInformation : IDisposable
       horizontalShadowOffset: 2,
       verticalShadowOffset: 2,
       numShadows: 3
+    );
+  }
+
+  private ClickableTextureComponent CreateNPCHeadIcon(string npcName, string fallbackSpritePath)
+  {
+    NPC? npc = Game1.getCharacterFromName(npcName);
+    if (npc == null)
+    {
+      ModEntry.MonitorObject.Log(
+        $"{GetType().Name}: Could not find {npcName} in the game, creating a fake one for ourselves.",
+        LogLevel.Warn
+      );
+      npc = new NPC { Name = npcName, Age = 0, Sprite = new AnimatedSprite(fallbackSpritePath) };
+    }
+
+    return new ClickableTextureComponent(
+      new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
+      npc.Sprite.Texture,
+      npc.GetHeadShot(),
+      Game1.pixelZoom
     );
   }
 

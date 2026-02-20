@@ -445,18 +445,14 @@ internal class LocationOfTownsfolk : IDisposable
       Color.White
     );
 
-    Game1.spriteBatch.DrawString(
+    UIElementUtils.DrawTextWithShadow(
+      Game1.spriteBatch,
       Game1.smallFont,
-      text,
-      new Vector2(windowPos.X + 17, windowPos.Y + 17),
-      Game1.textShadowColor
-    );
-
-    Game1.spriteBatch.DrawString(
-      Game1.smallFont,
-      text,
+      text.ToString(),
       new Vector2(windowPos.X + 15, windowPos.Y + 15),
-      Game1.textColor
+      Game1.textColor,
+      Game1.textShadowColor,
+      new Vector2(2, 2)
     );
   }
 #endregion

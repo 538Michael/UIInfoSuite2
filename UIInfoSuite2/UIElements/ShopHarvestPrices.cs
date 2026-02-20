@@ -61,17 +61,14 @@ internal class ShopHarvestPrices : IDisposable
       IClickableMenu.drawTextureBox(Game1.spriteBatch, xPosition + 20, yPosition - 52, 264, 108, Color.White);
       // Title "Harvest Price"
       string textToRender = I18n.HarvestPrice();
-      Game1.spriteBatch.DrawString(
-        Game1.dialogueFont,
-        textToRender,
-        new Vector2(xPosition + 30, yPosition - 38),
-        Color.Black * 0.2f
-      );
-      Game1.spriteBatch.DrawString(
+      UIElementUtils.DrawTextWithShadow(
+        Game1.spriteBatch,
         Game1.dialogueFont,
         textToRender,
         new Vector2(xPosition + 32, yPosition - 40),
-        Color.Black * 0.8f
+        Color.Black * 0.8f,
+        Color.Black * 0.2f,
+        new Vector2(-2, 2)
       );
       // Tree Icon
       xPosition += 80;
@@ -100,17 +97,14 @@ internal class ShopHarvestPrices : IDisposable
       );
       // Price
       string priceText = value.ToString();
-      Game1.spriteBatch.DrawString(
-        Game1.dialogueFont,
-        priceText,
-        new Vector2(xPosition + 50, yPosition + 6),
-        Color.Black * 0.2f
-      );
-      Game1.spriteBatch.DrawString(
+      UIElementUtils.DrawTextWithShadow(
+        Game1.spriteBatch,
         Game1.dialogueFont,
         priceText,
         new Vector2(xPosition + 52, yPosition + 4),
-        Color.Black * 0.8f
+        Color.Black * 0.8f,
+        Color.Black * 0.2f,
+        new Vector2(-2, 2)
       );
       /*
        * I have no Idea why this is here...

@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.Menus;
 using UIInfoSuite2.Infrastructure;
@@ -45,5 +46,18 @@ public static class UIElementUtils
     }
 
     IClickableMenu.drawHoverText(Game1.spriteBatch, hoverText, Game1.dialogueFont);
+  }
+
+  public static void DrawTextWithShadow(
+    SpriteBatch b,
+    SpriteFont font,
+    string text,
+    Vector2 position,
+    Color textColor,
+    Color shadowColor,
+    Vector2 shadowOffset)
+  {
+    b.DrawString(font, text, position + shadowOffset, shadowColor);
+    b.DrawString(font, text, position, textColor);
   }
 }
