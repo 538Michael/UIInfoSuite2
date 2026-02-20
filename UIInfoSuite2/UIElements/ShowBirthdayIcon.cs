@@ -20,6 +20,8 @@ internal class ShowBirthdayIcon : IDisposable
   private readonly PerScreen<List<ClickableTextureComponent>> _birthdayIcons =
     new(() => new List<ClickableTextureComponent>());
 
+  private readonly PerScreen<bool> _iconsDirty = new(() => true);
+
   private bool Enabled { get; set; }
   private bool HideBirthdayIfFullFriendShip { get; set; }
   private readonly IModHelper _helper;
@@ -108,12 +110,14 @@ internal class ShowBirthdayIcon : IDisposable
       if (friendship != null && friendship.GiftsToday > 0)
       {
         npcs.RemoveAt(i);
+        _iconsDirty.Value = true;
       }
     }
   }
 
   private void CheckForBirthday()
   {
+    _iconsDirty.Value = true;
     _birthdayNPCs.Value.Clear();
     foreach (GameLocation? location in Game1.locations)
     {
@@ -160,12 +164,28 @@ internal class ShowBirthdayIcon : IDisposable
 
   private void DrawBirthdayIcon()
   {
-    _birthdayIcons.Value.Clear();
-    foreach (NPC npc in _birthdayNPCs.Value)
+    if (_iconsDirty.Value)
     {
-      Rectangle headShot = npc.GetHeadShot();
+      _iconsDirty.Value = false;
+      _birthdayIcons.Value.Clear();
+      foreach (NPC npc in _birthdayNPCs.Value)
+      {
+        Rectangle headShot = npc.GetHeadShot();
+        _birthdayIcons.Value.Add(new ClickableTextureComponent(
+          npc.Name,
+          new Rectangle(0, 0, (int)(16.0 * 2.9f), (int)(16.0 * 2.9f)),
+          null,
+          npc.Name,
+          npc.Sprite.Texture,
+          headShot,
+          2f
+        ));
+      }
+    }
+
+    for (var i = 0; i < _birthdayIcons.Value.Count; i++)
+    {
       Point iconPosition = IconHandler.Handler.GetNewIconPosition();
-      var scale = 2.9f;
 
       Game1.spriteBatch.Draw(
         Game1.mouseCursors,
@@ -174,23 +194,15 @@ internal class ShowBirthdayIcon : IDisposable
         Color.White,
         0.0f,
         Vector2.Zero,
-        scale,
+        2.9f,
         SpriteEffects.None,
         1f
       );
 
-      var birthdayIcon = new ClickableTextureComponent(
-        npc.Name,
-        new Rectangle(iconPosition.X - 7, iconPosition.Y - 2, (int)(16.0 * scale), (int)(16.0 * scale)),
-        null,
-        npc.Name,
-        npc.Sprite.Texture,
-        headShot,
-        2f
-      );
-
-      birthdayIcon.draw(Game1.spriteBatch);
-      _birthdayIcons.Value.Add(birthdayIcon);
+      ClickableTextureComponent icon = _birthdayIcons.Value[i];
+      icon.bounds.X = iconPosition.X - 7;
+      icon.bounds.Y = iconPosition.Y - 2;
+      icon.draw(Game1.spriteBatch);
     }
   }
 
